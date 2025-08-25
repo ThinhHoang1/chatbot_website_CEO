@@ -1,3 +1,7 @@
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
 import asyncio
 import streamlit as st
 # Vẫn import các thành phần từ langchain-core hoặc langchain
