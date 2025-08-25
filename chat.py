@@ -63,7 +63,7 @@ st.caption(f"Tôi là trợ lý ảo, sẵn sàng trả lời các câu hỏi t�
 
 try:
     retriever = load_and_process_data(WEBSITE_URL, GOOGLE_API_KEY)
-    llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=GOOGLE_API_KEY, temperature=0.7)
+    llm = ChatGoogleGenerativeAI(model="gemini-2.5-flash", google_api_key=GOOGLE_API_KEY, temperature=0.7)
     
     chain_type_kwargs = {"prompt": PROMPT}
     qa_chain = RetrievalQA.from_chain_type(
