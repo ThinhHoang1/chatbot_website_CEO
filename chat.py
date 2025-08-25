@@ -1,3 +1,4 @@
+import asyncio
 import streamlit as st
 # Vẫn import các thành phần từ langchain-core hoặc langchain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
@@ -19,6 +20,9 @@ WEBSITE_URL = "https://www.ceo.pro.vn/"
 # --- HÀM TẢI DỮ LIỆU VÀ XỬ LÝ ---
 @st.cache_resource
 def load_and_process_data(url, api_key):
+    # TẠO VÀ SET EVENT LOOP MỚI CHO LUỒNG HIỆN TẠI
+    asyncio.set_event_loop(asyncio.new_event_loop()) # <-- THÊM DÒNG NÀY
+
     loader = WebBaseLoader(url)
     data = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
