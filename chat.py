@@ -13,7 +13,7 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_GEMINI_API_KEY")
+GOOGLE_API_KEY = st.secrets["GOOGLE_GEMINI_API_KEY"]
 WEBSITE_URL = "https://www.ceo.pro.vn/"
 
 # --- HÀM TẢI DỮ LIỆU VÀ XỬ LÝ ---
