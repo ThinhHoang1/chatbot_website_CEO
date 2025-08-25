@@ -9,9 +9,12 @@ from langchain_community.document_loaders import WebBaseLoader # <-- THAY ĐỔI
 from langchain_community.vectorstores import Chroma           # <-- THAY ĐỔI
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 
-# --- CẤU HÌNH ---
-GOOGLE_API_KEY = "YOUR_GOOGLE_API_KEY"
-WEBSITE_URL = "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam" 
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+GOOGLE_API_KEY = os.getenv("GOOGLE_GEMINI_API_KEY")
+WEBSITE_URL = "https://www.ceo.pro.vn/"
 
 # --- HÀM TẢI DỮ LIỆU VÀ XỬ LÝ ---
 @st.cache_resource
