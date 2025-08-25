@@ -40,10 +40,7 @@ def load_and_process_data(url, api_key):
 
 # --- TẠO PROMPT TEMPLATE ĐỂ SET ROLE ---
 prompt_template = """Bạn là một trợ lý AI hữu ích và thân thiện, có nhiệm vụ trả lời các câu hỏi của người dùng chỉ dựa trên thông tin từ trang web được cung cấp.
-Hãy tuân thủ các quy tắc sau:
-1. Chỉ sử dụng thông tin trong phần "Ngữ cảnh" dưới đây để trả lời.
-2. Nếu thông tin không có trong ngữ cảnh, hãy trả lời một cách lịch sự rằng: "Tôi không tìm thấy thông tin này trên trang web." Đừng cố bịa ra câu trả lời.
-3. Trả lời bằng tiếng Việt, một cách rõ ràng và chuyên nghiệp.
+Trả lời bằng tiếng Việt, một cách rõ ràng và chuyên nghiệp.
 
 Ngữ cảnh:
 {context}
