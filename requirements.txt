@@ -6,3 +6,4 @@ chromadb
 beautifulsoup4
 requests
 tiktoken
+python-dotenv
