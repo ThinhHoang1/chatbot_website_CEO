@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 streamlit==1.27.0
 requests==2.31.0
 beautifulsoup4==4.12.2
@@ -5,3 +6,21 @@ langchain==0.1.154
 chromadb==0.3.30
 langchain-google-genai==0.0.14
 python-dotenv==1.0.1
+=======
+streamlit
+langchain
+langchain-community
+langchain-google-genai
+chromadb
+numpy
+pandas
+requests
+tqdm
+pyyaml
+python-dotenv
+rich>
+markdown-it-py
+mdurl
+wheel
+python
+>>>>>>> a3e7bba8b64b3c1b9d38fbf844e4e9ae0f83ce2e
