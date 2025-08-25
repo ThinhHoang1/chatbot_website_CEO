@@ -2,10 +2,10 @@ import streamlit as st
 import requests
 from bs4 import BeautifulSoup
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import Chroma
 from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
+from langchain_community.vectorstores import Chroma
 import os
 from dotenv import load_dotenv
 load_dotenv()
