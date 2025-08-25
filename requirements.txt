@@ -1,4 +1,25 @@
+# Web framework
 streamlit==1.27.0
+
+# LangChain và Google Gemini/Embeddings
 langchain==0.1.153
-chromadb==0.4.15
 langchain-google-genai==0.0.9
+
+# Vector DB
+chromadb==0.4.15
+
+# Các package phụ trợ
+numpy>=1.25.0
+pandas>=2.1.0
+requests>=2.31.0
+tqdm>=4.66.1
+pyyaml>=6.0
+python-dotenv>=1.0.0
+
+# Cho hiển thị và markdown trong Streamlit
+rich>=14.1.0
+markdown-it-py>=4.0.0
+mdurl>=0.1.2
+
+# Đảm bảo build trên Windows/Linux
+wheel>=0.40.0
