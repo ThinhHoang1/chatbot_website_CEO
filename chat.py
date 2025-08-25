@@ -1,41 +1,33 @@
 import streamlit as st
-import requests
-from bs4 import BeautifulSoup
+# Vẫn import các thành phần từ langchain-core hoặc langchain
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain.chains import RetrievalQA
 from langchain.prompts import PromptTemplate
-from langchain_community.vectorstores import Chroma
-import os
-from dotenv import load_dotenv
-load_dotenv()
 
-GOOGLE_API_KEY = os.getenv("GOOGLE_GEMINI_API_KEY")
-WEBSITE_URL = "https://www.ceo.pro.vn/"
+# Thay đổi các import để trỏ đến các gói cụ thể hơn
+from langchain_community.document_loaders import WebBaseLoader # <-- THAY ĐỔI
+from langchain_community.vectorstores import Chroma           # <-- THAY ĐỔI
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 
-# --- Lấy và xử lý dữ liệu (thay WebBaseLoader) ---
+# --- CẤU HÌNH ---
+GOOGLE_API_KEY = "YOUR_GOOGLE_API_KEY"
+WEBSITE_URL = "https://vi.wikipedia.org/wiki/Vi%E1%BB%87t_Nam" 
+
+# --- HÀM TẢI DỮ LIỆU VÀ XỬ LÝ ---
 @st.cache_resource
 def load_and_process_data(url, api_key):
-    resp = requests.get(url)
-    soup = BeautifulSoup(resp.text, "html.parser")
-    for script in soup(["script", "style"]):
-        script.decompose()
-    text = soup.get_text(separator="\n")
-    
-    from langchain.schema import Document
-    doc = Document(page_content=text, metadata={"source": url})
-    
+    loader = WebBaseLoader(url)
+    data = loader.load()
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
-    chunks = text_splitter.split_documents([doc])
-    
+    chunks = text_splitter.split_documents(data)
     vector_store = Chroma.from_documents(
         chunks,
         embedding=GoogleGenerativeAIEmbeddings(model="models/embedding-001", google_api_key=api_key)
     )
-    
-    return vector_store.as_retriever(search_kwargs={"k": 3})
+    retriever = vector_store.as_retriever(search_kwargs={"k": 3})
+    return retriever
 
-# --- Prompt template ---
+# --- TẠO PROMPT TEMPLATE ĐỂ SET ROLE ---
 prompt_template = """Bạn là một trợ lý AI hữu ích và thân thiện, có nhiệm vụ trả lời các câu hỏi của người dùng chỉ dựa trên thông tin từ trang web được cung cấp.
 Hãy tuân thủ các quy tắc sau:
 1. Chỉ sử dụng thông tin trong phần "Ngữ cảnh" dưới đây để trả lời.
@@ -49,16 +41,18 @@ Câu hỏi của người dùng: {question}
 
 Câu trả lời của bạn:"""
 
-PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
+PROMPT = PromptTemplate(
+    template=prompt_template, input_variables=["context", "question"]
+)
 
-# --- Giao diện Streamlit ---
-st.set_page_config(page_title="Chatbot Website CEO Pro Club", page_icon="🤖")
-st.title("🤖 Chatbot Hỗ Trợ Thông Tin CEO Pro Club")
+# --- GIAO DIỆN STREAMLIT ---
+st.set_page_config(page_title="Chatbot Website với Gemini", page_icon="🤖")
+st.title("🤖 Chatbot Hỗ Trợ Thông Tin Website")
 st.caption(f"Tôi là trợ lý ảo, sẵn sàng trả lời các câu hỏi từ trang: {WEBSITE_URL}")
 
 try:
     retriever = load_and_process_data(WEBSITE_URL, GOOGLE_API_KEY)
-    llm = ChatGoogleGenerativeAI(model="models/gemini-2.5-flash", google_api_key=GOOGLE_API_KEY, temperature=0.7)
+    llm = ChatGoogleGenerativeAI(model="gemini-pro", google_api_key=GOOGLE_API_KEY, temperature=0.7)
     
     chain_type_kwargs = {"prompt": PROMPT}
     qa_chain = RetrievalQA.from_chain_type(
