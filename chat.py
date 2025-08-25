@@ -18,6 +18,16 @@ import os
 from dotenv import load_dotenv
 load_dotenv()
 
+def sanitize_for_markdown(text: str) -> str:
+    """
+    Hàm này thay thế các ký tự có thể gây lỗi cho bộ render Markdown JavaScript
+    trên một số trình duyệt di động. Cụ thể là dấu `?` trong các nhóm regex.
+    """
+    # Thay thế các ký tự có thể gây ra lỗi regex không hợp lệ
+    # Ví dụ: một chuỗi như `(?<` có thể gây lỗi trên các trình duyệt cũ.
+    # Ta có thể thay thế các ký tự đặc biệt hơn, nhưng bắt đầu với dấu `\` là phổ biến nhất.
+    return text.replace('\\', '\\\\')
+
 GOOGLE_API_KEY = st.secrets["GOOGLE_GEMINI_API_KEY"]
 WEBSITE_URL = "https://www.ceo.pro.vn/"
 
@@ -76,20 +86,28 @@ try:
 
     for message in st.session_state.messages:
         with st.chat_message(message["role"]):
-            st.markdown(message["content"])
+            # Làm sạch tất cả nội dung trước khi render
+            st.markdown(sanitize_for_markdown(message["content"]))
+
 
     if prompt := st.chat_input("Bạn muốn hỏi gì về nội dung trang web?"):
         st.session_state.messages.append({"role": "user", "content": prompt})
         with st.chat_message("user"):
             st.markdown(prompt)
 
+
         with st.chat_message("assistant"):
             with st.spinner("Đang tìm kiếm và tổng hợp câu trả lời..."):
-                response = qa_chain(prompt)
-                answer = response['result']
-                st.markdown(answer)
+                response_dict = qa_chain.invoke(prompt)
+                raw_answer = response_dict['result']
+                
+                # Làm sạch câu trả lời trước khi hiển thị
+                sanitized_answer = sanitize_for_markdown(raw_answer)
+                
+                st.markdown(sanitized_answer) # <-- Hiển thị nội dung đã được làm sạch
         
-        st.session_state.messages.append({"role": "assistant", "content": answer})
+        # Lưu câu trả lời gốc (chưa làm sạch) vào lịch sử
+        st.session_state.messages.append({"role": "assistant", "content": raw_answer})
 
 except Exception as e:
     st.error(f"Đã xảy ra lỗi: {e}")
