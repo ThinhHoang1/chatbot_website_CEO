@@ -6,4 +6,4 @@ chromadb
 beautifulsoup4
 requests
 tiktoken
-python-dotenv
+pysqlite3-binary  # <-- THÊM DÒNG NÀY
